@@ -35,7 +35,7 @@ class MyHomePage extends StatelessWidget {
             const Text(
               'You have pushed the button this many times:',
             ),
-            const CounterSlider(width: 300, height: 150,),
+            const CounterSlider(width: 300, height: 150, buttonRatio: 0.8,slideFactor: 0.3),
             Text(
               'hi',
               style: Theme.of(context).textTheme.headlineMedium,
