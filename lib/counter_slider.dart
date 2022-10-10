@@ -59,13 +59,23 @@ class _CounterSliderState extends State<CounterSlider> {
           (buttonSize / 2) -
           buttonGap);
 
+  void decrement() {
+    setState(() {
+      value--;
+    });
+  }
+
+  void increment() {
+    setState(() {
+      value++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var clamped = lockedOn.lockManipulation(this);
-    double x = clamped.dx /
-        maxButtonSeparation *
-        (widget.width / 2) *
-        (widget.slideFactor);
+    double xStatus = clamped.dx / maxButtonSeparation;
+    double x = xStatus * (widget.width / 2) * (widget.slideFactor);
     double y = clamped.dy.clamp(0, widget.height * .2);
     return ConstrainedBox(
       constraints: BoxConstraints.tightFor(
@@ -73,7 +83,7 @@ class _CounterSliderState extends State<CounterSlider> {
         height: widget.height,
       ),
       child: Container(
-        color: const Color.fromARGB(255, 255, 165, 165),
+        // color: const Color.fromARGB(255, 255, 165, 165),
         child: Stack(
           clipBehavior: Clip.none,
           children: [
@@ -91,6 +101,34 @@ class _CounterSliderState extends State<CounterSlider> {
                 child: SizedBox(
                   width: widget.width - (buttonGap * 2) + 4,
                   height: widget.height - (buttonGap * 2) + 4,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          constraints: BoxConstraints.tightFor(
+                              width: buttonSize, height: buttonSize),
+                          splashRadius: buttonSize * (3 / 8),
+                          onPressed: decrement,
+                          icon: const Icon(
+                            Icons.remove,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        IconButton(
+                          constraints: BoxConstraints.tightFor(
+                              width: buttonSize, height: buttonSize),
+                          splashRadius: buttonSize * (3 / 8),
+                          onPressed: increment,
+                          icon: const Icon(
+                            Icons.add,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -98,6 +136,7 @@ class _CounterSliderState extends State<CounterSlider> {
               left: widget.width / 2 - buttonSize / 2 + clamped.dx,
               top: buttonGap + clamped.dy,
               child: GestureDetector(
+                onTap: increment,
                 onPanStart: (details) {
                   setState(() {
                     // change = details.localPosition;
@@ -115,6 +154,11 @@ class _CounterSliderState extends State<CounterSlider> {
                   });
                 },
                 onPanEnd: (details) {
+                  if(xStatus <= -0.3){
+                    decrement();
+                  } else if(xStatus >= 0.3){
+                    increment();
+                  }
                   setState(() {
                     change = Offset.zero;
                   });
