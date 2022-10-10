@@ -3,13 +3,14 @@ import 'dart:math' show pi;
 import 'package:flutter/material.dart';
 
 Offset _onX(_CounterSliderState state) {
-  return Offset(state.change.dx.clamp(-state.maxButtonSeparation, state.maxButtonSeparation), 0);
+  return Offset(
+      state.change.dx
+          .clamp(-state.maxButtonSeparation, state.maxButtonSeparation),
+      0);
 }
 
 Offset _onY(_CounterSliderState state) {
-  double max =
-      state.widget.height * 0.5 / (1 + state.widget.slideFactor);
-  return Offset(0, state.change.dy.clamp(0, max));
+  return Offset(0, state.change.dy.clamp(0, state.widget.height * 0.8));
 }
 
 enum LockedOn {
@@ -26,13 +27,13 @@ bool between(double x, double min, double max) {
 }
 
 class CounterSlider extends StatefulWidget {
-  const CounterSlider({
-    super.key,
-    required this.width,
-    required this.height,
-    this.buttonRatio = .85,
-    this.slideFactor = .4
-  }) : assert(slideFactor >= 0.0 && slideFactor <= 1.0);
+  const CounterSlider(
+      {super.key,
+      required this.width,
+      required this.height,
+      this.buttonRatio = .85,
+      this.slideFactor = .4})
+      : assert(slideFactor >= 0.0);
 
   final double width, height;
 
@@ -53,12 +54,19 @@ class _CounterSliderState extends State<CounterSlider> {
 
   late double buttonGap = (widget.height - buttonSize) / 2;
 
-  late double maxButtonSeparation = ((widget.width / 2) * (1 + widget.slideFactor) - (buttonSize / 2) - buttonGap);
+  late double maxButtonSeparation =
+      ((widget.width / 2) * (1 + widget.slideFactor) -
+          (buttonSize / 2) -
+          buttonGap);
 
   @override
   Widget build(BuildContext context) {
     var clamped = lockedOn.lockManipulation(this);
-    var x = clamped.dx / maxButtonSeparation * (widget.width/2) * (widget.slideFactor);
+    double x = clamped.dx /
+        maxButtonSeparation *
+        (widget.width / 2) *
+        (widget.slideFactor);
+    double y = clamped.dy.clamp(0, widget.height * .2);
     return ConstrainedBox(
       constraints: BoxConstraints.tightFor(
         width: widget.width,
@@ -71,14 +79,18 @@ class _CounterSliderState extends State<CounterSlider> {
           children: [
             Positioned(
               left: x,
-              top: clamped.dy * widget.slideFactor,
+              top: y,
               child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(buttonSize/2),
+                    borderRadius:
+                        BorderRadius.circular(buttonSize / 2 + buttonGap),
+                    border: Border.all(
+                        color: const Color.fromARGB(28, 0, 0, 0),
+                        width: buttonGap - 2),
                     color: const Color.fromARGB(28, 0, 0, 0)),
                 child: SizedBox(
-                  width: widget.width,
-                  height: widget.height,
+                  width: widget.width - (buttonGap * 2) + 4,
+                  height: widget.height - (buttonGap * 2) + 4,
                 ),
               ),
             ),
@@ -107,14 +119,27 @@ class _CounterSliderState extends State<CounterSlider> {
                     change = Offset.zero;
                   });
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(buttonSize/2 - buttonGap),
-                    color: const Color.fromARGB(123, 0, 0, 0),
-                  ),
-                  child: SizedBox(
-                    width: buttonSize,
-                    height: buttonSize,
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.grab,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(buttonSize / 2),
+                      color: const Color.fromARGB(123, 0, 0, 0),
+                    ),
+                    child: SizedBox(
+                      width: buttonSize,
+                      height: buttonSize,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          '$value',
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 255, 255, 255),
+                            fontSize: 48,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
