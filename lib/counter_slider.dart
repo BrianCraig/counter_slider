@@ -27,13 +27,13 @@ bool between(double x, double min, double max) {
 }
 
 class CounterSlider extends StatefulWidget {
-  const CounterSlider(
-      {super.key,
-      required this.width,
-      required this.height,
-      this.buttonRatio = .85,
-      this.slideFactor = .4})
-      : assert(slideFactor >= 0.0);
+  const CounterSlider({
+    super.key,
+    required this.width,
+    required this.height,
+    this.buttonRatio = .85,
+    this.slideFactor = .4,
+  }) : assert(slideFactor >= 0.0);
 
   final double width, height;
 
@@ -71,12 +71,20 @@ class _CounterSliderState extends State<CounterSlider> {
     });
   }
 
+  void reset() {
+    setState(() {
+      value = 0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var clamped = lockedOn.lockManipulation(this);
     double xStatus = clamped.dx / maxButtonSeparation;
     double x = xStatus * (widget.width / 2) * (widget.slideFactor);
     double y = clamped.dy.clamp(0, widget.height * .2);
+    CrossFadeState cs =
+        y < clamped.dy ? CrossFadeState.showSecond : CrossFadeState.showFirst;
     return ConstrainedBox(
       constraints: BoxConstraints.tightFor(
         width: widget.width,
@@ -101,33 +109,52 @@ class _CounterSliderState extends State<CounterSlider> {
                 child: SizedBox(
                   width: widget.width - (buttonGap * 2) + 4,
                   height: widget.height - (buttonGap * 2) + 4,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          constraints: BoxConstraints.tightFor(
-                              width: buttonSize, height: buttonSize),
-                          splashRadius: buttonSize * (3 / 8),
-                          onPressed: decrement,
-                          icon: const Icon(
-                            Icons.remove,
-                            color: Colors.grey,
+                  child: AnimatedCrossFade(
+                    firstChild: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: BoxConstraints.tightFor(
+                                width: buttonSize, height: buttonSize),
+                            splashRadius: buttonSize * (4 / 8),
+                            onPressed: decrement,
+                            icon: const Icon(
+                              Icons.remove,
+                              color: Colors.grey,
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          constraints: BoxConstraints.tightFor(
-                              width: buttonSize, height: buttonSize),
-                          splashRadius: buttonSize * (3 / 8),
-                          onPressed: increment,
-                          icon: const Icon(
-                            Icons.add,
-                            color: Colors.grey,
+                          IconButton(
+                            constraints: BoxConstraints.tightFor(
+                                width: buttonSize, height: buttonSize),
+                            splashRadius: buttonSize * (4 / 8),
+                            onPressed: increment,
+                            icon: const Icon(
+                              Icons.add,
+                              color: Colors.grey,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                    secondChild: Align(
+                      alignment: Alignment.center,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints.tightFor(
+                            width: buttonSize, height: buttonSize),
+                        splashRadius: buttonSize * (4 / 8),
+                        onPressed: decrement,
+                        icon: const Icon(
+                          Icons.restart_alt,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    crossFadeState: cs,
+                    duration: const Duration(milliseconds: 280),
                   ),
                 ),
               ),
@@ -154,10 +181,12 @@ class _CounterSliderState extends State<CounterSlider> {
                   });
                 },
                 onPanEnd: (details) {
-                  if(xStatus <= -0.3){
+                  if (xStatus <= -0.3) {
                     decrement();
-                  } else if(xStatus >= 0.3){
+                  } else if (xStatus >= 0.3) {
                     increment();
+                  } else if (cs == CrossFadeState.showSecond) {
+                    reset();
                   }
                   setState(() {
                     change = Offset.zero;
@@ -168,7 +197,7 @@ class _CounterSliderState extends State<CounterSlider> {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(buttonSize / 2),
-                      color: const Color.fromARGB(123, 0, 0, 0),
+                      color: const Color.fromARGB(200, 255, 255, 255),
                     ),
                     child: SizedBox(
                       width: buttonSize,
@@ -177,9 +206,9 @@ class _CounterSliderState extends State<CounterSlider> {
                         alignment: Alignment.center,
                         child: Text(
                           '$value',
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            fontSize: 48,
+                          style: TextStyle(
+                            color: const Color.fromARGB(255, 0, 0, 0),
+                            fontSize: widget.height / 2,
                           ),
                         ),
                       ),

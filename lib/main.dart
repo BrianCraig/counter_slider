@@ -12,7 +12,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(),
@@ -32,14 +31,35 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            const CounterSlider(
+              width: 256,
+              height: 64,
+              buttonRatio: 0.9,
+              slideFactor: 0,
             ),
-            const CounterSlider(width: 300, height: 120, buttonRatio: 0.8,slideFactor: 0.4),
-            Text(
-              'hi',
-              style: Theme.of(context).textTheme.headlineMedium,
+            const SizedBox(height: 48),
+            const CounterSlider(
+              width: 300,
+              height: 120,
+              buttonRatio: 0.95,
+              slideFactor: 0.4,
             ),
+            const SizedBox(height: 48),
+            const CounterSlider(
+              width: 300,
+              height: 120,
+              buttonRatio: 0.8,
+              slideFactor: 0.4,
+            ),
+            const SizedBox(height: 48),
+            const CounterSlider(
+              width: 300,
+              height: 120,
+              buttonRatio: 0.8,
+              slideFactor: 0.4,
+            ),
+            const SizedBox(height: 48),
+            Slider(value: 0.5, onChanged: (_){}, min: -5, max: 100),
           ],
         ),
       ),
