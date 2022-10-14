@@ -31,13 +31,16 @@ class CounterSlider extends StatefulWidget {
     super.key,
     required this.width,
     required this.height,
-    this.buttonRatio = .85,
-    this.slideFactor = .4,
-  }) : assert(slideFactor >= 0.0);
+    this.buttonBorderGap = 2,
+    this.borderSize = 2,
+    this.slideFactor = 1.4,
+  })  : assert(slideFactor >= 0.0),
+        assert(width >= 96),
+        assert(height >= 32);
 
   final double width, height;
 
-  final double buttonRatio, slideFactor;
+  final double borderSize, slideFactor, buttonBorderGap;
 
   @override
   State<CounterSlider> createState() => _CounterSliderState();
@@ -53,15 +56,16 @@ class _CounterSliderState extends State<CounterSlider> {
   double _buttonSize = 0,
       _buttonGap = 0,
       _maxButtonSeparation = 0,
-      _halfWidth = 0;
+      _halfWidth = 0,
+      _buttonRadius = 0;
 
   void calculateDimensions() {
-    _buttonSize = widget.buttonRatio * widget.height;
-    _buttonGap = (widget.height - _buttonSize) / 2;
+    _buttonGap = widget.borderSize + widget.buttonBorderGap;
+    _buttonSize = widget.height - (_buttonGap * 2);
+    _buttonRadius = _buttonSize / 2;
     _halfWidth = (widget.width / 2);
-    _maxButtonSeparation = (_halfWidth * (1 + widget.slideFactor) -
-        (_buttonSize / 2) -
-        _buttonGap);
+    _maxButtonSeparation =
+        _halfWidth * widget.slideFactor - _buttonRadius - _buttonGap;
   }
 
   @override
@@ -98,7 +102,7 @@ class _CounterSliderState extends State<CounterSlider> {
   Widget build(BuildContext context) {
     var clamped = lockedOn.lockManipulation(this);
     double xStatus = clamped.dx / _maxButtonSeparation;
-    double x = xStatus * _halfWidth * (widget.slideFactor);
+    double x = xStatus * _halfWidth * (widget.slideFactor - 1);
     double y = clamped.dy.clamp(0, widget.height * .2);
     CrossFadeState cs =
         y < clamped.dy ? CrossFadeState.showSecond : CrossFadeState.showFirst;
@@ -117,18 +121,17 @@ class _CounterSliderState extends State<CounterSlider> {
               top: y,
               child: Container(
                 decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.circular(_buttonSize / 2 + _buttonGap),
+                    borderRadius: BorderRadius.all(Radius.circular(widget.height)),
                     border: Border.all(
                         color: const Color.fromARGB(28, 0, 0, 0),
-                        width: _buttonGap - 2),
+                        width: widget.borderSize),
                     color: const Color.fromARGB(28, 0, 0, 0)),
                 child: SizedBox(
-                  width: widget.width - (_buttonGap * 2) + 4,
-                  height: widget.height - (_buttonGap * 2) + 4,
+                  width: widget.width - (widget.borderSize * 2),
+                  height: widget.height - (widget.borderSize * 2),
                   child: AnimatedCrossFade(
                     firstChild: Padding(
-                      padding: const EdgeInsets.all(2.0),
+                      padding: EdgeInsets.all(widget.buttonBorderGap),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -166,7 +169,7 @@ class _CounterSliderState extends State<CounterSlider> {
               ),
             ),
             Positioned(
-              left: widget.width / 2 - _buttonSize / 2 + clamped.dx,
+              left: _halfWidth - _buttonRadius + clamped.dx,
               top: _buttonGap + clamped.dy,
               child: GestureDetector(
                 onTap: increment,
@@ -202,7 +205,7 @@ class _CounterSliderState extends State<CounterSlider> {
                   cursor: SystemMouseCursors.grab,
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(_buttonSize / 2),
+                      borderRadius: BorderRadius.circular(_buttonRadius),
                       color: const Color.fromARGB(200, 255, 255, 255),
                     ),
                     child: SizedBox(
