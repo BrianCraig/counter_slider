@@ -128,30 +128,19 @@ class _CounterSliderState extends State<CounterSlider> {
                   height: widget.height - (_buttonGap * 2) + 4,
                   child: AnimatedCrossFade(
                     firstChild: Padding(
-                      padding: const EdgeInsets.all(6.0),
+                      padding: const EdgeInsets.all(2.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          IconButton(
-                            padding: EdgeInsets.zero,
-                            constraints: BoxConstraints.tightFor(
-                                width: _buttonSize, height: _buttonSize),
-                            splashRadius: _buttonSize * (4 / 8),
-                            onPressed: decrement,
-                            icon: const Icon(
-                              Icons.remove,
-                              color: Colors.grey,
-                            ),
+                          MyButton(
+                            icon: Icons.remove,
+                            onClick: decrement,
+                            size: _buttonSize,
                           ),
-                          IconButton(
-                            constraints: BoxConstraints.tightFor(
-                                width: _buttonSize, height: _buttonSize),
-                            splashRadius: _buttonSize * (4 / 8),
-                            onPressed: increment,
-                            icon: const Icon(
-                              Icons.add,
-                              color: Colors.grey,
-                            ),
+                          MyButton(
+                            icon: Icons.add,
+                            onClick: increment,
+                            size: _buttonSize,
                           ),
                         ],
                       ),
@@ -235,6 +224,37 @@ class _CounterSliderState extends State<CounterSlider> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class MyButton extends StatelessWidget {
+  const MyButton(
+      {super.key,
+      required this.icon,
+      required this.onClick,
+      required this.size});
+
+  final IconData icon;
+  final void Function() onClick;
+  final double size;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onClick,
+      child: SizedBox(
+        height: size,
+        width: size,
+        child: DecoratedBox(
+          decoration: const BoxDecoration(
+            color: Color.fromRGBO(0, 0, 0, .1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            icon,
+          ),
         ),
       ),
     );
