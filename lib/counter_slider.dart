@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 Offset _onX(_CounterSliderState state) {
   return Offset(
       state.change.dx
-          .clamp(-state.maxButtonSeparation, state.maxButtonSeparation),
+          .clamp(-state._maxButtonSeparation, state._maxButtonSeparation),
       0);
 }
 
@@ -13,11 +13,11 @@ Offset _onY(_CounterSliderState state) {
   return Offset(0, state.change.dy.clamp(0, state.widget.height * 0.8));
 }
 
-enum LockedOn {
+enum _LockedOn {
   X(_onX),
   Y(_onY);
 
-  const LockedOn(this.lockManipulation);
+  const _LockedOn(this.lockManipulation);
 
   final Offset Function(_CounterSliderState state) lockManipulation;
 }
@@ -48,16 +48,33 @@ class _CounterSliderState extends State<CounterSlider> {
 
   Offset change = Offset.zero;
 
-  LockedOn lockedOn = LockedOn.X;
+  _LockedOn lockedOn = _LockedOn.X;
 
-  late double buttonSize = widget.buttonRatio * widget.height;
+  double _buttonSize = 0,
+      _buttonGap = 0,
+      _maxButtonSeparation = 0,
+      _halfWidth = 0;
 
-  late double buttonGap = (widget.height - buttonSize) / 2;
+  void calculateDimensions() {
+    _buttonSize = widget.buttonRatio * widget.height;
+    _buttonGap = (widget.height - _buttonSize) / 2;
+    _halfWidth = (widget.width / 2);
+    _maxButtonSeparation = (_halfWidth * (1 + widget.slideFactor) -
+        (_buttonSize / 2) -
+        _buttonGap);
+  }
 
-  late double maxButtonSeparation =
-      ((widget.width / 2) * (1 + widget.slideFactor) -
-          (buttonSize / 2) -
-          buttonGap);
+  @override
+  void initState() {
+    super.initState();
+    calculateDimensions();
+  }
+
+  @override
+  void didUpdateWidget(covariant CounterSlider oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    calculateDimensions();
+  }
 
   void decrement() {
     setState(() {
@@ -80,8 +97,8 @@ class _CounterSliderState extends State<CounterSlider> {
   @override
   Widget build(BuildContext context) {
     var clamped = lockedOn.lockManipulation(this);
-    double xStatus = clamped.dx / maxButtonSeparation;
-    double x = xStatus * (widget.width / 2) * (widget.slideFactor);
+    double xStatus = clamped.dx / _maxButtonSeparation;
+    double x = xStatus * _halfWidth * (widget.slideFactor);
     double y = clamped.dy.clamp(0, widget.height * .2);
     CrossFadeState cs =
         y < clamped.dy ? CrossFadeState.showSecond : CrossFadeState.showFirst;
@@ -101,14 +118,14 @@ class _CounterSliderState extends State<CounterSlider> {
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius:
-                        BorderRadius.circular(buttonSize / 2 + buttonGap),
+                        BorderRadius.circular(_buttonSize / 2 + _buttonGap),
                     border: Border.all(
                         color: const Color.fromARGB(28, 0, 0, 0),
-                        width: buttonGap - 2),
+                        width: _buttonGap - 2),
                     color: const Color.fromARGB(28, 0, 0, 0)),
                 child: SizedBox(
-                  width: widget.width - (buttonGap * 2) + 4,
-                  height: widget.height - (buttonGap * 2) + 4,
+                  width: widget.width - (_buttonGap * 2) + 4,
+                  height: widget.height - (_buttonGap * 2) + 4,
                   child: AnimatedCrossFade(
                     firstChild: Padding(
                       padding: const EdgeInsets.all(6.0),
@@ -118,8 +135,8 @@ class _CounterSliderState extends State<CounterSlider> {
                           IconButton(
                             padding: EdgeInsets.zero,
                             constraints: BoxConstraints.tightFor(
-                                width: buttonSize, height: buttonSize),
-                            splashRadius: buttonSize * (4 / 8),
+                                width: _buttonSize, height: _buttonSize),
+                            splashRadius: _buttonSize * (4 / 8),
                             onPressed: decrement,
                             icon: const Icon(
                               Icons.remove,
@@ -128,8 +145,8 @@ class _CounterSliderState extends State<CounterSlider> {
                           ),
                           IconButton(
                             constraints: BoxConstraints.tightFor(
-                                width: buttonSize, height: buttonSize),
-                            splashRadius: buttonSize * (4 / 8),
+                                width: _buttonSize, height: _buttonSize),
+                            splashRadius: _buttonSize * (4 / 8),
                             onPressed: increment,
                             icon: const Icon(
                               Icons.add,
@@ -144,8 +161,8 @@ class _CounterSliderState extends State<CounterSlider> {
                       child: IconButton(
                         padding: EdgeInsets.zero,
                         constraints: BoxConstraints.tightFor(
-                            width: buttonSize, height: buttonSize),
-                        splashRadius: buttonSize * (4 / 8),
+                            width: _buttonSize, height: _buttonSize),
+                        splashRadius: _buttonSize * (4 / 8),
                         onPressed: decrement,
                         icon: const Icon(
                           Icons.restart_alt,
@@ -160,8 +177,8 @@ class _CounterSliderState extends State<CounterSlider> {
               ),
             ),
             Positioned(
-              left: widget.width / 2 - buttonSize / 2 + clamped.dx,
-              top: buttonGap + clamped.dy,
+              left: widget.width / 2 - _buttonSize / 2 + clamped.dx,
+              top: _buttonGap + clamped.dy,
               child: GestureDetector(
                 onTap: increment,
                 onPanStart: (details) {
@@ -174,8 +191,8 @@ class _CounterSliderState extends State<CounterSlider> {
                     if (change == Offset.zero) {
                       lockedOn = between(details.delta.direction,
                               (pi * 0.5 / 4), ((pi * 3.5 / 4)))
-                          ? LockedOn.Y
-                          : LockedOn.X;
+                          ? _LockedOn.Y
+                          : _LockedOn.X;
                     }
                     change += details.delta;
                   });
@@ -196,12 +213,12 @@ class _CounterSliderState extends State<CounterSlider> {
                   cursor: SystemMouseCursors.grab,
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(buttonSize / 2),
+                      borderRadius: BorderRadius.circular(_buttonSize / 2),
                       color: const Color.fromARGB(200, 255, 255, 255),
                     ),
                     child: SizedBox(
-                      width: buttonSize,
-                      height: buttonSize,
+                      width: _buttonSize,
+                      height: _buttonSize,
                       child: Align(
                         alignment: Alignment.center,
                         child: Text(
