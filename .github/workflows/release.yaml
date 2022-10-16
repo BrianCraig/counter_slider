@@ -23,7 +23,7 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: github-pages
-          path: ./example/build/web
+          path: ./example/build/web/
 
   deploy:
     needs: build
@@ -38,5 +38,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v1
