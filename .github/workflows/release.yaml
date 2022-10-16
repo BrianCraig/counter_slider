@@ -7,7 +7,7 @@ on:
       - release.*
 
 jobs:
-  build-web:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,8 +17,24 @@ jobs:
       - name: Build
         working-directory: ./example
         run: flutter build web --release --web-renderer canvaskit --base-href=/counter_slider/
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Upload artifact
+        uses: actions/upload-artifact@main
         with:
-          folder: ./example/build/web
-          token: ${{ secrets.GITHUB_TOKEN }}
+          name: deployment
+          path: ./example/build/web
+
+  deploy:
+    needs: build
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
