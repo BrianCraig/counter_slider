@@ -20,9 +20,8 @@ jobs:
         working-directory: ./example
         run: flutter build web --release --web-renderer canvaskit --base-href=/counter_slider/
       - name: Upload artifact
-        uses: actions/upload-artifact@main
+        uses: actions/upload-pages-artifact@v1
         with:
-          name: github-pages
           path: ./example/build/web/
 
   deploy:
