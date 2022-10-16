@@ -1,7 +1,7 @@
 name: counter_slider
-description: A new Flutter package project.
+description: Flutter Number counter widget.
 version: 0.0.1
-homepage:
+repository: https://github.com/BrianCraig/counter_slider
 
 environment:
   sdk: '>=2.17.0 <3.0.0'
