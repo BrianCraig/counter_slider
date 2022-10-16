@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
       - uses: subosito/flutter-action@v2
         with:
           channel: "master"
@@ -37,4 +39,5 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
+        artifact_name: deployment
         uses: actions/deploy-pages@v1
