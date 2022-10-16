@@ -17,6 +17,8 @@ jobs:
       - name: Build
         working-directory: ./example
         run: flutter build web --release --web-renderer canvaskit
+        env:
+          FLUTTER_BASE_HREF: /counter-slider/
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
