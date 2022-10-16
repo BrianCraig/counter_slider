@@ -16,7 +16,7 @@ jobs:
           channel: "master"
       - name: Build
         working-directory: ./example
-        run: flutter build web --release --web-renderer canvaskit --base-href=/counter-slider/
+        run: flutter build web --release --web-renderer canvaskit --base-href=/counter_slider/
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
