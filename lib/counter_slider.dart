@@ -29,14 +29,23 @@ bool between(double x, double min, double max) {
 class CounterSlider extends StatefulWidget {
   const CounterSlider({
     super.key,
+    required this.value,
+    required this.setValue,
     required this.width,
     required this.height,
+    this.minValue = double.negativeInfinity,
+    this.maxValue = double.infinity,
     this.buttonBorderGap = 2,
     this.borderSize = 2,
     this.slideFactor = 1.4,
   })  : assert(slideFactor >= 0.0),
         assert(width >= 96),
         assert(height >= 32);
+
+  final int value;
+  final void Function(int) setValue;
+
+  final double minValue, maxValue;
 
   final double width, height;
 
@@ -47,8 +56,6 @@ class CounterSlider extends StatefulWidget {
 }
 
 class _CounterSliderState extends State<CounterSlider> {
-  int value = 0;
-
   Offset change = Offset.zero;
 
   _LockedOn lockedOn = _LockedOn.X;
@@ -81,21 +88,19 @@ class _CounterSliderState extends State<CounterSlider> {
   }
 
   void decrement() {
-    setState(() {
-      value--;
-    });
+    if (widget.minValue <= widget.value - 1) {
+      widget.setValue(widget.value - 1);
+    }
   }
 
   void increment() {
-    setState(() {
-      value++;
-    });
+    if (widget.maxValue >= widget.value + 1) {
+      widget.setValue(widget.value + 1);
+    }
   }
 
   void reset() {
-    setState(() {
-      value = 0;
-    });
+    widget.setValue(0);
   }
 
   @override
@@ -121,11 +126,12 @@ class _CounterSliderState extends State<CounterSlider> {
               top: y,
               child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(widget.height)),
-                    border: Border.all(
-                        color: const Color.fromARGB(28, 0, 0, 0),
-                        width: widget.borderSize),
-                    color: const Color.fromARGB(28, 0, 0, 0)),
+                  borderRadius:
+                      BorderRadius.all(Radius.circular(widget.height)),
+                  border: Border.all(
+                      color: Theme.of(context).hintColor,
+                      width: widget.borderSize),
+                ),
                 child: SizedBox(
                   width: widget.width - (widget.borderSize * 2),
                   height: widget.height - (widget.borderSize * 2),
@@ -206,7 +212,7 @@ class _CounterSliderState extends State<CounterSlider> {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(_buttonRadius),
-                      color: const Color.fromARGB(200, 255, 255, 255),
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     child: SizedBox(
                       width: _buttonSize,
@@ -214,9 +220,9 @@ class _CounterSliderState extends State<CounterSlider> {
                       child: Align(
                         alignment: Alignment.center,
                         child: Text(
-                          '$value',
+                          '${widget.value}',
                           style: TextStyle(
-                            color: const Color.fromARGB(255, 0, 0, 0),
+                            color: Theme.of(context).colorScheme.onSecondary,
                             fontSize: widget.height / 2,
                           ),
                         ),
@@ -251,8 +257,8 @@ class MyButton extends StatelessWidget {
         height: size,
         width: size,
         child: DecoratedBox(
-          decoration: const BoxDecoration(
-            color: Color.fromRGBO(0, 0, 0, .1),
+          decoration: BoxDecoration(
+            color: Theme.of(context).hoverColor,
             shape: BoxShape.circle,
           ),
           child: Icon(

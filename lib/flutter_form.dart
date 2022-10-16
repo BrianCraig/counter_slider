@@ -23,6 +23,8 @@ class _FormPageState extends State<FormPage> {
 }
 
 class SignUpForm extends StatefulWidget {
+  const SignUpForm({super.key});
+
   @override
   _SignUpFormState createState() => _SignUpFormState();
 }

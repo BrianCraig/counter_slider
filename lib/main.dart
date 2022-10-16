@@ -1,5 +1,4 @@
 import 'package:counter_slider/counter_slider.dart';
-import 'package:counter_slider/flutter_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,10 +7,6 @@ void main() {
 }
 
 const p0 = MyHomePage();
-
-const p1 = FormPage(
-  title: 'Title',
-);
 
 Map<String, MaterialColor> colors = {
   "red": Colors.red,
@@ -44,6 +39,14 @@ class ExampleApp extends StatefulWidget {
 class _ExampleAppState extends State<ExampleApp> {
   MaterialColor primary = Colors.blue, secondary = Colors.cyan;
   bool darkMode = false;
+  int value = 0;
+
+  void setValue(int newValue) {
+    setState(() {
+      value = newValue;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -127,19 +130,59 @@ class _ExampleAppState extends State<ExampleApp> {
                 ),
               ),
               separatorWidget,
-              const CounterSlider(
-                width: 256,
-                height: 64,
-                slideFactor: 1,
+              Center(
+                child: CounterSlider(
+                  value: value,
+                  setValue: setValue,
+                  width: 256,
+                  height: 64,
+                  slideFactor: 1.4,
+                ),
               ),
               separatorWidget,
               separatorWidget,
               separatorWidget,
+              const MaterialInputs(),
               const DebugColors(),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class MaterialInputs extends StatefulWidget {
+  const MaterialInputs({super.key});
+
+  @override
+  State<MaterialInputs> createState() => _MaterialInputsState();
+}
+
+class _MaterialInputsState extends State<MaterialInputs> {
+  bool switchState = false;
+  bool checkbox = false;
+
+  void setSwitch(bool? newValue) {
+    setState(() {
+      switchState = newValue!;
+    });
+  }
+
+  void setCheckbox(bool? newValue) {
+    setState(() {
+      checkbox = newValue!;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Switch(value: switchState, onChanged: setSwitch),
+        separatorWidget,
+        Checkbox(value: checkbox, onChanged: setCheckbox)
+      ],
     );
   }
 }
@@ -272,6 +315,7 @@ class DebugColors extends StatelessWidget {
 
 const separatorWidget = SizedBox(
   height: 8.0,
+  width: 8.0,
 );
 
 class ColorDebugger extends StatelessWidget {
@@ -328,20 +372,26 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const CounterSlider(
+            CounterSlider(
+              value: 1,
+              setValue: (_) {},
               width: 256,
               height: 64,
               slideFactor: 1,
             ),
             const SizedBox(height: 48),
-            const CounterSlider(
+            CounterSlider(
+              value: 1,
+              setValue: (_) {},
               width: 300,
               height: 120,
               borderSize: 4,
               buttonBorderGap: 4,
             ),
             const SizedBox(height: 48),
-            const CounterSlider(
+            CounterSlider(
+              value: 1,
+              setValue: (_) {},
               width: 300,
               height: 48,
               slideFactor: 0.8,
@@ -349,7 +399,9 @@ class MyHomePage extends StatelessWidget {
               buttonBorderGap: 0,
             ),
             const SizedBox(height: 48),
-            const CounterSlider(
+            CounterSlider(
+              value: 1,
+              setValue: (_) {},
               width: 96,
               height: 32,
               slideFactor: 4,
