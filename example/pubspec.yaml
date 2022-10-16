@@ -1,4 +1,4 @@
-name: counter_slider
+name: counter_slider_example
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -31,6 +31,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  counter_slider: 
+    path: ../counter_slider
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -38,9 +40,6 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

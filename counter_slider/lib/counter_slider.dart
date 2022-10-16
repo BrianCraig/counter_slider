@@ -1,3 +1,5 @@
+library counter_slider;
+
 import 'dart:math' show pi;
 
 import 'package:flutter/material.dart';
@@ -141,12 +143,12 @@ class _CounterSliderState extends State<CounterSlider> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          MyButton(
+                          _MyButton(
                             icon: Icons.remove,
                             onClick: decrement,
                             size: _buttonSize,
                           ),
-                          MyButton(
+                          _MyButton(
                             icon: Icons.add,
                             onClick: increment,
                             size: _buttonSize,
@@ -239,10 +241,9 @@ class _CounterSliderState extends State<CounterSlider> {
   }
 }
 
-class MyButton extends StatelessWidget {
-  const MyButton(
-      {super.key,
-      required this.icon,
+class _MyButton extends StatelessWidget {
+  const _MyButton(
+      {required this.icon,
       required this.onClick,
       required this.size});
 

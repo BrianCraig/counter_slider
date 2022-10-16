@@ -17,7 +17,7 @@ class _FormPageState extends State<FormPage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Container(child: SignUpForm()),
+      body: Container(child: const SignUpForm()),
     );
   }
 }
@@ -62,7 +62,7 @@ class _SignUpFormState extends State<SignUpForm> {
             controlAffinity: ListTileControlAffinity.leading,
           ),
           const ListTile(
-            leading: CircleAvatar(maxRadius: 16) ,
+            leading: CircleAvatar(maxRadius: 16),
             title: Text(
               'I agree to the terms and condition',
             ),
@@ -70,12 +70,18 @@ class _SignUpFormState extends State<SignUpForm> {
               'I agree to the terms and condition',
             ),
           ),
-          const ListTile(
-            leading: CounterSlider(width: 96, height: 32, buttonBorderGap: 1, borderSize: 1) ,
-            title: Text(
+          ListTile(
+            leading: CounterSlider(
+                value: 0,
+                setValue: (_) {},
+                width: 96,
+                height: 32,
+                buttonBorderGap: 1,
+                borderSize: 1),
+            title: const Text(
               'I agree to the terms and condition',
             ),
-            subtitle: Text(
+            subtitle: const Text(
               'I agree to the terms and condition',
             ),
           )
