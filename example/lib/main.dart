@@ -6,6 +6,54 @@ void main() {
   runApp(const ExampleApp());
 }
 
+const exampleCode1 = '''
+CounterSlider(
+  value: value,
+  setValue: setValue,
+  width: 96,
+  height: 32,
+  slideFactor: 1,
+)''';
+
+const exampleCode2 = '''
+CounterSlider(
+  value: value,
+  setValue: setValue,
+  width: 96,
+  height: 32,
+  slideFactor: 1.6,
+)''';
+
+const exampleCode3 = '''
+CounterSlider(
+  value: value,
+  setValue: setValue,
+  minValue: 0,
+  width: 240,
+  height: 80,
+  slideFactor: 1.4,
+)''';
+
+const exampleCode4 = '''
+CounterSlider(
+  value: value,
+  setValue: setValue,
+  minValue: 0,
+  maxValue: 4,
+  width: 240,
+  height: 80,
+  slideFactor: 1.4,
+)''';
+
+const exampleCode5 = '''
+CounterSlider(
+  value: value,
+  setValue: setValue,
+  width: 240,
+  height: 64,
+  slideFactor: 0.8,
+)''';
+
 const p0 = MyHomePage();
 
 Map<String, MaterialColor> colors = {
@@ -39,13 +87,6 @@ class ExampleApp extends StatefulWidget {
 class _ExampleAppState extends State<ExampleApp> {
   MaterialColor primary = Colors.blue, secondary = Colors.cyan;
   bool darkMode = false;
-  int value = 0;
-
-  void setValue(int newValue) {
-    setState(() {
-      value = newValue;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,24 +171,155 @@ class _ExampleAppState extends State<ExampleApp> {
                 ),
               ),
               separatorWidget,
-              Center(
-                child: CounterSlider(
+              SliderExample(
+                title: 'Small counter',
+                code: exampleCode1,
+                generator: (value, setValue) => CounterSlider(
                   value: value,
                   setValue: setValue,
-                  width: 256,
-                  height: 64,
+                  width: 96,
+                  height: 32,
+                  slideFactor: 1,
+                ),
+              ),
+              separatorWidget,
+              SliderExample(
+                title: 'Small counter that slides',
+                code: exampleCode2,
+                generator: (value, setValue) => CounterSlider(
+                  value: value,
+                  setValue: setValue,
+                  width: 96,
+                  height: 32,
+                  slideFactor: 1.6,
+                ),
+              ),
+              separatorWidget,
+              SliderExample(
+                title: 'Big one, positive only',
+                code: exampleCode3,
+                generator: (value, setValue) => CounterSlider(
+                  value: value,
+                  setValue: setValue,
+                  minValue: 0,
+                  width: 240,
+                  height: 80,
                   slideFactor: 1.4,
+                ),
+              ),
+              separatorWidget,
+              SliderExample(
+                title: 'Range [0, 4]',
+                code: exampleCode4,
+                generator: (value, setValue) => CounterSlider(
+                  value: value,
+                  setValue: setValue,
+                  minValue: 0,
+                  maxValue: 4,
+                  width: 240,
+                  height: 80,
+                  slideFactor: 1.4,
+                ),
+              ),
+              separatorWidget,
+              SliderExample(
+                title: 'Negative Slide',
+                code: exampleCode5,
+                generator: (value, setValue) => CounterSlider(
+                  value: value,
+                  setValue: setValue,
+                  width: 240,
+                  height: 64,
+                  slideFactor: 0.8,
                 ),
               ),
               separatorWidget,
               separatorWidget,
               separatorWidget,
+              Text(
+                'Other material widgets for reference',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               const MaterialInputs(),
+              separatorWidget,
+              Text(
+                'Theme values',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              separatorWidget,
               const DebugColors(),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class SliderExample extends StatefulWidget {
+  const SliderExample({
+    super.key,
+    required this.generator,
+    required this.code,
+    required this.title,
+  });
+
+  final CounterSlider Function(int value, void Function(int)) generator;
+  final String code, title;
+
+  @override
+  State<SliderExample> createState() => _SliderExampleState();
+}
+
+class _SliderExampleState extends State<SliderExample> {
+  int value = 0;
+
+  void setValue(int value) {
+    setState(() {
+      this.value = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              widget.title,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            separatorWidget,
+            FilledButton(
+                onPressed: () =>
+                    Clipboard.setData(ClipboardData(text: widget.code)),
+                child: const Text('Copy code')),
+          ],
+        ),
+        separatorWidget,
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: widget.generator(value, setValue),
+                  ),
+                ),
+                separatorWidget,
+                Text(
+                  widget.code,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -181,7 +353,13 @@ class _MaterialInputsState extends State<MaterialInputs> {
       children: [
         Switch(value: switchState, onChanged: setSwitch),
         separatorWidget,
-        Checkbox(value: checkbox, onChanged: setCheckbox)
+        Checkbox(value: checkbox, onChanged: setCheckbox),
+        separatorWidget,
+        FilledButton(onPressed: () {}, child: const Text('Button')),
+        separatorWidget,
+        OutlinedButton(onPressed: () {}, child: const Text('Button')),
+        separatorWidget,
+        ElevatedButton(onPressed: () {}, child: const Text('Button'))
       ],
     );
   }

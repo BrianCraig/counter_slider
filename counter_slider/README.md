@@ -13,6 +13,10 @@ and the Flutter guide for
 
 Number Counter that slides, inspired on [This Dribbble shot by Ehsan Rahimi](https://dribbble.com/shots/16434514-Tally-Counter-Micro-Interaction), and based on Material Design.
 
+[Here you can test it live](https://briancraig.github.io/counter_slider/)
+
+![Example](./example/example.gif)  
+
 ## Features
 
  - min and max values
