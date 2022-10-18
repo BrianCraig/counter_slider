@@ -54,8 +54,6 @@ CounterSlider(
   slideFactor: 0.8,
 )''';
 
-const p0 = MyHomePage();
-
 Map<String, MaterialColor> colors = {
   "red": Colors.red,
   "pink": Colors.pink,
@@ -236,16 +234,7 @@ class _ExampleAppState extends State<ExampleApp> {
               separatorWidget,
               separatorWidget,
               separatorWidget,
-              Text(
-                'Other material widgets for reference',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
               const MaterialInputs(),
-              separatorWidget,
-              Text(
-                'Theme values',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
               separatorWidget,
               const DebugColors(),
             ],
@@ -294,9 +283,11 @@ class _SliderExampleState extends State<SliderExample> {
             ),
             separatorWidget,
             FilledButton(
-                onPressed: () =>
-                    Clipboard.setData(ClipboardData(text: widget.code)),
-                child: const Text('Copy code')),
+              onPressed: () => Clipboard.setData(
+                ClipboardData(text: widget.code),
+              ),
+              child: const Text('Copy code'),
+            ),
           ],
         ),
         separatorWidget,
@@ -349,17 +340,27 @@ class _MaterialInputsState extends State<MaterialInputs> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Switch(value: switchState, onChanged: setSwitch),
+        Text(
+          'Other material widgets for reference',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
         separatorWidget,
-        Checkbox(value: checkbox, onChanged: setCheckbox),
-        separatorWidget,
-        FilledButton(onPressed: () {}, child: const Text('Button')),
-        separatorWidget,
-        OutlinedButton(onPressed: () {}, child: const Text('Button')),
-        separatorWidget,
-        ElevatedButton(onPressed: () {}, child: const Text('Button'))
+        Row(
+          children: [
+            Switch(value: switchState, onChanged: setSwitch),
+            separatorWidget,
+            Checkbox(value: checkbox, onChanged: setCheckbox),
+            separatorWidget,
+            FilledButton(onPressed: () {}, child: const Text('Button')),
+            separatorWidget,
+            OutlinedButton(onPressed: () {}, child: const Text('Button')),
+            separatorWidget,
+            ElevatedButton(onPressed: () {}, child: const Text('Button'))
+          ],
+        ),
       ],
     );
   }
@@ -371,7 +372,13 @@ class DebugColors extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          'Theme values',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        separatorWidget,
         ColorDebugger(
           name: 'primaryColor',
           color: Theme.of(context).primaryColor,
@@ -520,77 +527,6 @@ class ColorDebugger extends StatelessWidget {
         separatorWidget,
         Text(desc),
       ]),
-    );
-  }
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: p0,
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Hi"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            CounterSlider(
-              value: 1,
-              setValue: (_) {},
-              width: 256,
-              height: 64,
-              slideFactor: 1,
-            ),
-            const SizedBox(height: 48),
-            CounterSlider(
-              value: 1,
-              setValue: (_) {},
-              width: 300,
-              height: 120,
-              borderSize: 4,
-              buttonBorderGap: 4,
-            ),
-            const SizedBox(height: 48),
-            CounterSlider(
-              value: 1,
-              setValue: (_) {},
-              width: 300,
-              height: 48,
-              slideFactor: 0.8,
-              borderSize: 6,
-              buttonBorderGap: 0,
-            ),
-            const SizedBox(height: 48),
-            CounterSlider(
-              value: 1,
-              setValue: (_) {},
-              width: 96,
-              height: 32,
-              slideFactor: 4,
-              buttonBorderGap: 0,
-              borderSize: 0,
-            ),
-            const SizedBox(height: 48),
-            Slider(value: 0.5, onChanged: (_) {}, min: -5, max: 100),
-          ],
-        ),
-      ),
     );
   }
 }
