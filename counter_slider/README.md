@@ -15,7 +15,7 @@ Number Counter that slides, inspired on [This Dribbble shot by Ehsan Rahimi](htt
 
 [Here you can test it live](https://briancraig.github.io/counter_slider/)
 
-![Example](./example/example.gif)  
+![Example](./counter_slider/example/example.gif)  
 
 ## Features
 
