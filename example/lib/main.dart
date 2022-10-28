@@ -85,6 +85,14 @@ class ExampleApp extends StatefulWidget {
 class _ExampleAppState extends State<ExampleApp> {
   MaterialColor primary = Colors.blue, secondary = Colors.cyan;
   bool darkMode = false;
+  bool withWidth = true, withHeight = true;
+  double width = 96, height = 32;
+  int border = 2, spacing = 2;
+  int demoValue = 0;
+
+  void setDemo(int demo) => setState(() {
+        demoValue = demo;
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +119,11 @@ class _ExampleAppState extends State<ExampleApp> {
           padding: const EdgeInsets.all(8.0),
           child: ListView(
             children: [
+              Text(
+                'Settings',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              separatorWidget,
               DropdownButtonFormField(
                 decoration: const InputDecoration(
                   label: Text('Primary color'),
@@ -158,14 +171,126 @@ class _ExampleAppState extends State<ExampleApp> {
               ListTile(
                 leading: Switch(
                   value: darkMode,
-                  onChanged: (bool? darkMode) {
-                    setState(() {
-                      this.darkMode = darkMode!;
-                    });
-                  },
+                  onChanged: (bool darkMode) => setState(() {
+                    this.darkMode = darkMode;
+                  }),
                 ),
                 title: const Text(
                   'Dark mode',
+                ),
+              ),
+              ListTile(
+                leading: Switch(
+                  value: withWidth,
+                  onChanged: (bool withWidth) => setState(() {
+                    this.withWidth = withWidth;
+                  }),
+                ),
+                title: Row(
+                  children: [
+                    const Text(
+                      'Width',
+                    ),
+                    Expanded(
+                      child: Slider(
+                        onChanged: (double width) => setState(() {
+                          this.width = width;
+                        }),
+                        value: width,
+                        min: 96,
+                        max: 300,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ListTile(
+                leading: Switch(
+                  value: withHeight,
+                  onChanged: (bool withHeight) => setState(() {
+                    this.withHeight = withHeight;
+                  }),
+                ),
+                title: Row(
+                  children: [
+                    const Text(
+                      'Height',
+                    ),
+                    Expanded(
+                      child: Slider(
+                        onChanged: (double height) => setState(() {
+                          this.height = height;
+                        }),
+                        value: height,
+                        min: 32,
+                        max: 120,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ListTile(
+                leading: CounterSlider(
+                  value: border,
+                  setValue: (int border) => setState(() {
+                    this.border = border;
+                  }),
+                  width: 96,
+                  height: 32,
+                  minValue: 0,
+                  maxValue: 8,
+                ),
+                title: const Text(
+                  'Border size',
+                ),
+              ),
+              ListTile(
+                leading: CounterSlider(
+                  value: spacing,
+                  setValue: (int spacing) => setState(() {
+                    this.spacing = spacing;
+                  }),
+                  width: 96,
+                  height: 32,
+                  minValue: 0,
+                  maxValue: 8,
+                ),
+                title: const Text(
+                  'Button border gap',
+                ),
+              ),
+              separatorWidget,
+              Text(
+                'Demo',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              separatorWidget,
+              Center(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment(-0.9, -0.8),
+                        colors: [
+                          Color.fromRGBO(122, 122, 122, 0.2),
+                          Colors.transparent,
+                          Colors.transparent,
+                          Color.fromRGBO(122, 122, 122, 0.2),
+                        ],
+                        tileMode: TileMode.repeated,
+                        stops: [0, 0.01, 0.5, 0.51]),
+                  ),
+                  constraints: BoxConstraints.loose(const Size(300, 120)),
+                  child: Center(
+                    child: CounterSlider(
+                      value: demoValue,
+                      setValue: setDemo,
+                      width: width,
+                      height: height,
+                      borderSize: border.toDouble(),
+                      buttonBorderGap: spacing.toDouble(),
+                    ),
+                  ),
                 ),
               ),
               separatorWidget,
