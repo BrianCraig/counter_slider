@@ -1,3 +1,12 @@
+## 0.1.0
+
+ - More dynamic demo, where you can preview the component.
+ - Fixed documentation. #TODO
+ - Renamed `setValue` to `onChanged`. #TODO
+ - Renamed `buttonBorderGap` to `gapSize` #TODO
+ - Change fixed width + height to optional, default unconstrained. #TODO
+ - Fixed `borderSize: 0` still visible. #TODO
+
 ## 0.0.2+1
 
 Fixed documentation
