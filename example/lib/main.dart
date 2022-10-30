@@ -1,6 +1,5 @@
 import 'package:counter_slider/counter_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class IDDarkMode {}
@@ -79,54 +78,6 @@ void main() {
   );
 }
 
-const exampleCode1 = '''
-CounterSlider(
-  value: value,
-  setValue: setValue,
-  width: 96,
-  height: 32,
-  slideFactor: 1,
-)''';
-
-const exampleCode2 = '''
-CounterSlider(
-  value: value,
-  setValue: setValue,
-  width: 96,
-  height: 32,
-  slideFactor: 1.6,
-)''';
-
-const exampleCode3 = '''
-CounterSlider(
-  value: value,
-  setValue: setValue,
-  minValue: 0,
-  width: 240,
-  height: 80,
-  slideFactor: 1.4,
-)''';
-
-const exampleCode4 = '''
-CounterSlider(
-  value: value,
-  setValue: setValue,
-  minValue: 0,
-  maxValue: 4,
-  width: 240,
-  height: 80,
-  slideFactor: 1.4,
-)''';
-
-const exampleCode5 = '''
-CounterSlider(
-  value: value,
-  setValue: setValue,
-  width: 240,
-  height: 64,
-  slideFactor: 0.8,
-)''';
-
 Map<String, MaterialColor> colors = {
   "red": Colors.red,
   "pink": Colors.pink,
@@ -190,8 +141,47 @@ class ExampleContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
+        const SettingOptions(),
+        const SizedBox(
+          height: 32,
+        ),
+        Text(
+          'Demo',
+          style: Theme.of(context).textTheme.headlineSmall,
+          textAlign: TextAlign.start,
+        ),
+        separatorWidget,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            const DemoShow(),
+            SelectableText(
+              generateCode(context),
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 64,
+        ),
+        const MaterialInputs(),
+      ],
+    );
+  }
+}
+
+class SettingOptions extends StatelessWidget {
+  const SettingOptions({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         Text(
           'Settings',
+          textAlign: TextAlign.start,
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         separatorWidget,
@@ -308,185 +298,58 @@ class ExampleContent extends StatelessWidget {
             'Button border gap',
           ),
         ),
-        separatorWidget,
-        Text(
-          'Demo',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        separatorWidget,
-        Center(
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment(-0.9, -0.8),
-                  colors: [
-                    Color.fromRGBO(122, 122, 122, 0.2),
-                    Colors.transparent,
-                    Colors.transparent,
-                    Color.fromRGBO(122, 122, 122, 0.2),
-                  ],
-                  tileMode: TileMode.repeated,
-                  stops: [0, 0.01, 0.5, 0.51]),
-            ),
-            constraints: BoxConstraints.loose(const Size(300, 120)),
-            child: Center(
-              child: CounterSlider(
-                value: context.watch<CNV<int, IDDemoValue>>().value,
-                setValue: context.watch<CNV<int, IDDemoValue>>().onChanged,
-                width: context.watch<CNV<double, IDWidth>>().value,
-                height: context.watch<CNV<double, IDHeight>>().value,
-                borderSize:
-                    context.watch<CNV<int, IDBorder>>().value.toDouble(),
-                buttonBorderGap:
-                    context.watch<CNV<int, IDSpacing>>().value.toDouble(),
-              ),
-            ),
-          ),
-        ),
-        separatorWidget,
-        SliderExample(
-          title: 'Small counter',
-          code: exampleCode1,
-          generator: (value, setValue) => CounterSlider(
-            value: value,
-            setValue: setValue,
-            width: 96,
-            height: 32,
-            slideFactor: 1,
-          ),
-        ),
-        separatorWidget,
-        SliderExample(
-          title: 'Small counter that slides',
-          code: exampleCode2,
-          generator: (value, setValue) => CounterSlider(
-            value: value,
-            setValue: setValue,
-            width: 96,
-            height: 32,
-            slideFactor: 1.6,
-          ),
-        ),
-        separatorWidget,
-        SliderExample(
-          title: 'Big one, positive only',
-          code: exampleCode3,
-          generator: (value, setValue) => CounterSlider(
-            value: value,
-            setValue: setValue,
-            minValue: 0,
-            width: 240,
-            height: 80,
-            slideFactor: 1.4,
-          ),
-        ),
-        separatorWidget,
-        SliderExample(
-          title: 'Range [0, 4]',
-          code: exampleCode4,
-          generator: (value, setValue) => CounterSlider(
-            value: value,
-            setValue: setValue,
-            minValue: 0,
-            maxValue: 4,
-            width: 240,
-            height: 80,
-            slideFactor: 1.4,
-          ),
-        ),
-        separatorWidget,
-        SliderExample(
-          title: 'Negative Slide',
-          code: exampleCode5,
-          generator: (value, setValue) => CounterSlider(
-            value: value,
-            setValue: setValue,
-            width: 240,
-            height: 64,
-            slideFactor: 0.8,
-          ),
-        ),
-        separatorWidget,
-        separatorWidget,
-        separatorWidget,
-        const MaterialInputs(),
-        separatorWidget,
-        const DebugColors(),
       ],
     );
   }
 }
 
-class SliderExample extends StatefulWidget {
-  const SliderExample({
+class DemoShow extends StatelessWidget {
+  const DemoShow({
     super.key,
-    required this.generator,
-    required this.code,
-    required this.title,
   });
-
-  final CounterSlider Function(int value, void Function(int)) generator;
-  final String code, title;
-
-  @override
-  State<SliderExample> createState() => _SliderExampleState();
-}
-
-class _SliderExampleState extends State<SliderExample> {
-  int value = 0;
-
-  void setValue(int value) {
-    setState(() {
-      this.value = value;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(
-              widget.title,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            separatorWidget,
-            FilledButton(
-              onPressed: () => Clipboard.setData(
-                ClipboardData(text: widget.code),
-              ),
-              child: const Text('Copy code'),
-            ),
-          ],
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment(-0.9, -0.8),
+            colors: [
+              Color.fromRGBO(122, 122, 122, 0.2),
+              Colors.transparent,
+              Colors.transparent,
+              Color.fromRGBO(122, 122, 122, 0.2),
+            ],
+            tileMode: TileMode.repeated,
+            stops: [0, 0.01, 0.5, 0.51]),
+      ),
+      constraints: BoxConstraints.loose(const Size(300, 120)),
+      child: Center(
+        child: CounterSlider(
+          value: context.watch<CNV<int, IDDemoValue>>().value,
+          setValue: context.watch<CNV<int, IDDemoValue>>().onChanged,
+          width: context.watch<CNV<double, IDWidth>>().value,
+          height: context.watch<CNV<double, IDHeight>>().value,
+          borderSize: context.watch<CNV<int, IDBorder>>().value.toDouble(),
+          buttonBorderGap:
+              context.watch<CNV<int, IDSpacing>>().value.toDouble(),
         ),
-        separatorWidget,
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: widget.generator(value, setValue),
-                  ),
-                ),
-                separatorWidget,
-                SelectableText(
-                  widget.code,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
+
+String generateCode(BuildContext context) => [
+      "CounterSlider(\n  value:value,\n  setValue: setValue,\n",
+      if (context.read<CNV<bool, IDWidth>>().value)
+        "  width: ${context.watch<CNV<double, IDWidth>>().value.round()},\n",
+      if (context.read<CNV<bool, IDHeight>>().value)
+        "  height: ${context.watch<CNV<double, IDHeight>>().value.round()},\n",
+      "  borderSize: ${context.watch<CNV<int, IDBorder>>().value},\n",
+      "  buttonBorderGap: ${context.watch<CNV<int, IDSpacing>>().value},\n",
+      "}",
+    ].join();
 
 class MaterialInputs extends StatefulWidget {
   const MaterialInputs({super.key});
@@ -539,167 +402,7 @@ class _MaterialInputsState extends State<MaterialInputs> {
   }
 }
 
-class DebugColors extends StatelessWidget {
-  const DebugColors({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Theme values',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'primaryColor',
-          color: Theme.of(context).primaryColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'colorScheme.background',
-          color: Theme.of(context).colorScheme.background,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'colorScheme.primary',
-          color: Theme.of(context).colorScheme.primary,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'colorScheme.onPrimary',
-          color: Theme.of(context).colorScheme.onPrimary,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'colorScheme.secondary',
-          color: Theme.of(context).colorScheme.secondary,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'colorScheme.onSecondary',
-          color: Theme.of(context).colorScheme.onSecondary,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'canvasColor',
-          color: Theme.of(context).canvasColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'cardColor',
-          color: Theme.of(context).cardColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'dialogBackgroundColor',
-          color: Theme.of(context).dialogBackgroundColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'disabledColor',
-          color: Theme.of(context).disabledColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'dividerColor',
-          color: Theme.of(context).dividerColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'colorScheme.error',
-          color: Theme.of(context).colorScheme.error,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'focusColor',
-          color: Theme.of(context).focusColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'highlightColor',
-          color: Theme.of(context).highlightColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'hintColor',
-          color: Theme.of(context).hintColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'hoverColor',
-          color: Theme.of(context).hoverColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'indicatorColor',
-          color: Theme.of(context).indicatorColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'primaryColorDark',
-          color: Theme.of(context).primaryColorDark,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'primaryColorLight',
-          color: Theme.of(context).primaryColorLight,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'scaffoldBackgroundColor',
-          color: Theme.of(context).scaffoldBackgroundColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'secondaryHeaderColor',
-          color: Theme.of(context).secondaryHeaderColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'shadowColor',
-          color: Theme.of(context).shadowColor,
-        ),
-        separatorWidget,
-        ColorDebugger(
-          name: 'splashColor',
-          color: Theme.of(context).splashColor,
-        ),
-      ],
-    );
-  }
-}
-
 const separatorWidget = SizedBox(
   height: 8.0,
   width: 8.0,
 );
-
-class ColorDebugger extends StatelessWidget {
-  const ColorDebugger({
-    Key? key,
-    required this.color,
-    required this.name,
-  }) : super(key: key);
-
-  final Color color;
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    final String desc = 'Theme.of(context).$name';
-    return GestureDetector(
-      onTap: () => Clipboard.setData(ClipboardData(text: desc)),
-      child: Row(children: [
-        Container(
-          height: 32,
-          width: 32,
-          color: color,
-        ),
-        separatorWidget,
-        Text(desc),
-      ]),
-    );
-  }
-}
