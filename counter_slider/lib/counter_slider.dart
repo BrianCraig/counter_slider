@@ -41,7 +41,7 @@ class CounterSlider extends StatefulWidget {
     required this.height,
     this.minValue = double.negativeInfinity,
     this.maxValue = double.infinity,
-    this.buttonBorderGap = 2,
+    this.gapSize = 2,
     this.borderSize = 2,
     this.slideFactor = 1.4,
   })  : assert(slideFactor >= 0.0),
@@ -70,7 +70,7 @@ class CounterSlider extends StatefulWidget {
   final double slideFactor;
 
   /// gap between border and button in logical pixels, defaults to 2.
-  final double buttonBorderGap;
+  final double gapSize;
 
   @override
   State<CounterSlider> createState() => _CounterSliderState();
@@ -88,7 +88,7 @@ class _CounterSliderState extends State<CounterSlider> {
       _buttonRadius = 0;
 
   void calculateDimensions() {
-    _buttonGap = widget.borderSize + widget.buttonBorderGap;
+    _buttonGap = widget.borderSize + widget.gapSize;
     _buttonSize = widget.height - (_buttonGap * 2);
     _buttonRadius = _buttonSize / 2;
     _halfWidth = (widget.width / 2);
@@ -155,7 +155,7 @@ class _CounterSliderState extends State<CounterSlider> {
                 height: widget.height - (widget.borderSize * 2),
                 child: AnimatedCrossFade(
                   firstChild: Padding(
-                    padding: EdgeInsets.all(widget.buttonBorderGap),
+                    padding: EdgeInsets.all(widget.gapSize),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

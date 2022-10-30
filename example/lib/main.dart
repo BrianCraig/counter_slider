@@ -332,7 +332,7 @@ class DemoShow extends StatelessWidget {
           width: context.watch<CNV<double, IDWidth>>().value,
           height: context.watch<CNV<double, IDHeight>>().value,
           borderSize: context.watch<CNV<int, IDBorder>>().value.toDouble(),
-          buttonBorderGap:
+          gapSize:
               context.watch<CNV<int, IDSpacing>>().value.toDouble(),
         ),
       ),
@@ -347,7 +347,7 @@ String generateCode(BuildContext context) => [
       if (context.read<CNV<bool, IDHeight>>().value)
         "  height: ${context.watch<CNV<double, IDHeight>>().value.round()},\n",
       "  borderSize: ${context.watch<CNV<int, IDBorder>>().value},\n",
-      "  buttonBorderGap: ${context.watch<CNV<int, IDSpacing>>().value},\n",
+      "  gapSize: ${context.watch<CNV<int, IDSpacing>>().value},\n",
       "}",
     ].join();
 
