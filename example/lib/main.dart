@@ -275,7 +275,7 @@ class SettingOptions extends StatelessWidget {
         ListTile(
           leading: CounterSlider(
             value: context.watch<CNV<int, IDBorder>>().value,
-            setValue: context.watch<CNV<int, IDBorder>>().onChanged,
+            onChanged: context.watch<CNV<int, IDBorder>>().onChanged,
             width: 96,
             height: 32,
             minValue: 0,
@@ -288,7 +288,7 @@ class SettingOptions extends StatelessWidget {
         ListTile(
           leading: CounterSlider(
             value: context.watch<CNV<int, IDSpacing>>().value,
-            setValue: context.watch<CNV<int, IDSpacing>>().onChanged,
+            onChanged: context.watch<CNV<int, IDSpacing>>().onChanged,
             width: 96,
             height: 32,
             minValue: 0,
@@ -328,7 +328,7 @@ class DemoShow extends StatelessWidget {
       child: Center(
         child: CounterSlider(
           value: context.watch<CNV<int, IDDemoValue>>().value,
-          setValue: context.watch<CNV<int, IDDemoValue>>().onChanged,
+          onChanged: context.watch<CNV<int, IDDemoValue>>().onChanged,
           width: context.watch<CNV<double, IDWidth>>().value,
           height: context.watch<CNV<double, IDHeight>>().value,
           borderSize: context.watch<CNV<int, IDBorder>>().value.toDouble(),
@@ -341,7 +341,7 @@ class DemoShow extends StatelessWidget {
 }
 
 String generateCode(BuildContext context) => [
-      "CounterSlider(\n  value:value,\n  setValue: setValue,\n",
+      "CounterSlider(\n  value:value,\n  onChanged: onChanged,\n",
       if (context.read<CNV<bool, IDWidth>>().value)
         "  width: ${context.watch<CNV<double, IDWidth>>().value.round()},\n",
       if (context.read<CNV<bool, IDHeight>>().value)

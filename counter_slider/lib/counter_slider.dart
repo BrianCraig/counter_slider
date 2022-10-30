@@ -28,18 +28,15 @@ bool _between(double x, double min, double max) {
   return (x >= min) && (x <= max);
 }
 
-/// Creates a Material Design checkbox.
+/// Creates a Material Design Counter.
 ///
-/// The checkbox itself does not maintain any state. Instead, when the state of
-/// the checkbox changes, the widget calls the [onChanged] callback. Most
-/// widgets that use a checkbox will listen for the [onChanged] callback and
-/// rebuild the checkbox with a new [value] to update the visual appearance of
-/// the checkbox.
+/// The counter itself does not maintain any state. Instead, when the counter
+/// increments or decrements, the widget calls the [onChanged] callback.
 class CounterSlider extends StatefulWidget {
   const CounterSlider({
     super.key,
     required this.value,
-    required this.setValue,
+    required this.onChanged,
     required this.width,
     required this.height,
     this.minValue = double.negativeInfinity,
@@ -54,8 +51,8 @@ class CounterSlider extends StatefulWidget {
   /// current value
   final int value;
 
-  /// setState function
-  final void Function(int) setValue;
+  /// onChanged callback to your state manager.
+  final void Function(int) onChanged;
 
   /// inclusive min and max values, optional.
   final double minValue, maxValue;
@@ -113,18 +110,18 @@ class _CounterSliderState extends State<CounterSlider> {
 
   void decrement() {
     if (widget.minValue <= widget.value - 1) {
-      widget.setValue(widget.value - 1);
+      widget.onChanged(widget.value - 1);
     }
   }
 
   void increment() {
     if (widget.maxValue >= widget.value + 1) {
-      widget.setValue(widget.value + 1);
+      widget.onChanged(widget.value + 1);
     }
   }
 
   void reset() {
-    widget.setValue(0);
+    widget.onChanged(0);
   }
 
   @override
