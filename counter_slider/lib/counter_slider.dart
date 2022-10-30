@@ -144,12 +144,15 @@ class _CounterSliderState extends State<CounterSlider> {
             left: x,
             top: y,
             child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(widget.height)),
-                border: Border.all(
-                    color: Theme.of(context).hintColor,
-                    width: widget.borderSize),
-              ),
+              decoration: widget.borderSize > 0
+                  ? BoxDecoration(
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(widget.height)),
+                      border: Border.all(
+                          color: Theme.of(context).hintColor,
+                          width: widget.borderSize),
+                    )
+                  : null,
               child: SizedBox(
                 width: widget.width - (widget.borderSize * 2),
                 height: widget.height - (widget.borderSize * 2),

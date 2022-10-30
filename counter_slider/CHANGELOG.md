@@ -5,7 +5,7 @@
  - Renamed `setValue` to `onChanged`.
  - Renamed `buttonBorderGap` to `gapSize`
  - Change fixed width + height to optional, default unconstrained. #TODO
- - Fixed `borderSize: 0` still visible. #TODO
+ - Fixed `borderSize: 0` still visible.
 
 ## 0.0.2+1
 
