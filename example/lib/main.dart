@@ -14,6 +14,8 @@ class IDWidth {}
 
 class IDHeight {}
 
+class IDSliding {}
+
 class IDBorder {}
 
 class IDSpacing {}
@@ -67,6 +69,9 @@ void main() {
       ),
       ChangeNotifierProvider(
         create: (_) => ChangeNotifierValue<double, IDHeight>(32),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => ChangeNotifierValue<double, IDSliding>(1.4),
       ),
       ChangeNotifierProvider(
         create: (_) => ChangeNotifierValue<int, IDBorder>(2),
@@ -155,9 +160,12 @@ class ExampleContent extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             const DemoShow(),
-            SelectableText(
-              generateCode(context),
-              style: Theme.of(context).textTheme.bodyLarge,
+            SizedBox(
+              height: 160,
+              child: SelectableText(
+                generateCode(context),
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
             ),
           ],
         ),
@@ -245,7 +253,9 @@ class SettingOptions extends StatelessWidget {
               Expanded(
                 child: Slider(
                   value: context.watch<CNV<double, IDWidth>>().value,
-                  onChanged: context.watch<CNV<bool, IDWidth>>().value ? context.watch<CNV<double, IDWidth>>().onChanged : null,
+                  onChanged: context.watch<CNV<bool, IDWidth>>().value
+                      ? context.watch<CNV<double, IDWidth>>().onChanged
+                      : null,
                   min: 96,
                   max: 300,
                 ),
@@ -266,9 +276,32 @@ class SettingOptions extends StatelessWidget {
               Expanded(
                 child: Slider(
                   value: context.watch<CNV<double, IDHeight>>().value,
-                  onChanged: context.watch<CNV<bool, IDHeight>>().value ? context.watch<CNV<double, IDHeight>>().onChanged : null,
+                  onChanged: context.watch<CNV<bool, IDHeight>>().value
+                      ? context.watch<CNV<double, IDHeight>>().onChanged
+                      : null,
                   min: 32,
                   max: 120,
+                ),
+              ),
+            ],
+          ),
+        ),
+        ListTile(
+          leading: const SizedBox(
+            width: 58,
+          ),
+          title: Row(
+            children: [
+              Text(
+                'Slide factor',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              Expanded(
+                child: Slider(
+                  value: context.watch<CNV<double, IDSliding>>().value,
+                  onChanged: context.watch<CNV<double, IDSliding>>().onChanged,
+                  min: 0.5,
+                  max: 3,
                 ),
               ),
             ],
@@ -297,7 +330,7 @@ class SettingOptions extends StatelessWidget {
             maxValue: 8,
           ),
           title: const Text(
-            'Button border gap',
+            'Gap size',
           ),
         ),
       ],
@@ -331,8 +364,13 @@ class DemoShow extends StatelessWidget {
         child: CounterSlider(
           value: context.watch<CNV<int, IDDemoValue>>().value,
           onChanged: context.watch<CNV<int, IDDemoValue>>().onChanged,
-          width: context.watch<CNV<bool, IDWidth>>().value ? context.watch<CNV<double, IDWidth>>().value : null,
-          height: context.watch<CNV<bool, IDHeight>>().value ? context.watch<CNV<double, IDHeight>>().value : null,
+          width: context.watch<CNV<bool, IDWidth>>().value
+              ? context.watch<CNV<double, IDWidth>>().value
+              : null,
+          height: context.watch<CNV<bool, IDHeight>>().value
+              ? context.watch<CNV<double, IDHeight>>().value
+              : null,
+          slideFactor: context.watch<CNV<double, IDSliding>>().value,
           borderSize: context.watch<CNV<int, IDBorder>>().value.toDouble(),
           gapSize: context.watch<CNV<int, IDSpacing>>().value.toDouble(),
         ),
@@ -347,6 +385,7 @@ String generateCode(BuildContext context) => [
         "  width: ${context.watch<CNV<double, IDWidth>>().value.round()},\n",
       if (context.watch<CNV<bool, IDHeight>>().value)
         "  height: ${context.watch<CNV<double, IDHeight>>().value.round()},\n",
+      "  slideFactor: ${context.watch<CNV<double, IDSliding>>().value.toStringAsFixed(2)},\n",
       "  borderSize: ${context.watch<CNV<int, IDBorder>>().value},\n",
       "  gapSize: ${context.watch<CNV<int, IDSpacing>>().value},\n",
       "}",

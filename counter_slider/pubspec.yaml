@@ -1,6 +1,6 @@
 name: counter_slider
 description: Flutter Number counter widget with sliding animations and Material theme colors.
-version: 0.0.2+1
+version: 0.1.0
 repository: https://github.com/BrianCraig/counter_slider
 
 environment:

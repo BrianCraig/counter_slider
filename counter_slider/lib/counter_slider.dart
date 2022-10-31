@@ -40,7 +40,7 @@ class CounterSlider extends StatelessWidget {
     this.gapSize = 2,
     this.borderSize = 2,
     this.slideFactor = 1.4,
-  })  : assert(slideFactor >= 0.0),
+  })  : assert(slideFactor >= 0.5),
         assert(width == null || width >= 96),
         assert(height == null || height >= 32);
 
