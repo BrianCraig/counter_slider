@@ -202,6 +202,7 @@ class SettingOptions extends StatelessWidget {
               )
               .toList(),
           onChanged: context.watch<CNV<MaterialColor, IDPrimary>>().onChanged,
+          menuMaxHeight: 300,
         ),
         DropdownButtonFormField(
           decoration: const InputDecoration(
@@ -220,6 +221,7 @@ class SettingOptions extends StatelessWidget {
               )
               .toList(),
           onChanged: context.watch<CNV<MaterialColor, IDSecondary>>().onChanged,
+          menuMaxHeight: 300,
         ),
         ListTile(
           leading: Switch(
@@ -243,7 +245,7 @@ class SettingOptions extends StatelessWidget {
               Expanded(
                 child: Slider(
                   value: context.watch<CNV<double, IDWidth>>().value,
-                  onChanged: context.watch<CNV<double, IDWidth>>().onChanged,
+                  onChanged: context.watch<CNV<bool, IDWidth>>().value ? context.watch<CNV<double, IDWidth>>().onChanged : null,
                   min: 96,
                   max: 300,
                 ),
@@ -264,7 +266,7 @@ class SettingOptions extends StatelessWidget {
               Expanded(
                 child: Slider(
                   value: context.watch<CNV<double, IDHeight>>().value,
-                  onChanged: context.watch<CNV<double, IDHeight>>().onChanged,
+                  onChanged: context.watch<CNV<bool, IDHeight>>().value ? context.watch<CNV<double, IDHeight>>().onChanged : null,
                   min: 32,
                   max: 120,
                 ),
@@ -329,11 +331,10 @@ class DemoShow extends StatelessWidget {
         child: CounterSlider(
           value: context.watch<CNV<int, IDDemoValue>>().value,
           onChanged: context.watch<CNV<int, IDDemoValue>>().onChanged,
-          width: context.watch<CNV<double, IDWidth>>().value,
-          height: context.watch<CNV<double, IDHeight>>().value,
+          width: context.watch<CNV<bool, IDWidth>>().value ? context.watch<CNV<double, IDWidth>>().value : null,
+          height: context.watch<CNV<bool, IDHeight>>().value ? context.watch<CNV<double, IDHeight>>().value : null,
           borderSize: context.watch<CNV<int, IDBorder>>().value.toDouble(),
-          gapSize:
-              context.watch<CNV<int, IDSpacing>>().value.toDouble(),
+          gapSize: context.watch<CNV<int, IDSpacing>>().value.toDouble(),
         ),
       ),
     );
@@ -342,9 +343,9 @@ class DemoShow extends StatelessWidget {
 
 String generateCode(BuildContext context) => [
       "CounterSlider(\n  value:value,\n  onChanged: onChanged,\n",
-      if (context.read<CNV<bool, IDWidth>>().value)
+      if (context.watch<CNV<bool, IDWidth>>().value)
         "  width: ${context.watch<CNV<double, IDWidth>>().value.round()},\n",
-      if (context.read<CNV<bool, IDHeight>>().value)
+      if (context.watch<CNV<bool, IDHeight>>().value)
         "  height: ${context.watch<CNV<double, IDHeight>>().value.round()},\n",
       "  borderSize: ${context.watch<CNV<int, IDBorder>>().value},\n",
       "  gapSize: ${context.watch<CNV<int, IDSpacing>>().value},\n",

@@ -28,25 +28,21 @@ bool _between(double x, double min, double max) {
   return (x >= min) && (x <= max);
 }
 
-/// Creates a Material Design Counter.
-///
-/// The counter itself does not maintain any state. Instead, when the counter
-/// increments or decrements, the widget calls the [onChanged] callback.
-class CounterSlider extends StatefulWidget {
+class CounterSlider extends StatelessWidget {
   const CounterSlider({
     super.key,
     required this.value,
     required this.onChanged,
-    required this.width,
-    required this.height,
+    this.width,
+    this.height,
     this.minValue = double.negativeInfinity,
     this.maxValue = double.infinity,
     this.gapSize = 2,
     this.borderSize = 2,
     this.slideFactor = 1.4,
   })  : assert(slideFactor >= 0.0),
-        assert(width >= 96),
-        assert(height >= 32);
+        assert(width == null || width >= 96),
+        assert(height == null || height >= 32);
 
   /// current value
   final int value;
@@ -54,18 +50,19 @@ class CounterSlider extends StatefulWidget {
   /// onChanged callback to your state manager.
   final void Function(int) onChanged;
 
-  /// inclusive min and max values, optional.
+  /// inclusive min and max values.
   final double minValue, maxValue;
 
-  /// size of the widget, required.
-  final double width, height;
+  /// size of the widget, if not present, dimension will be the maxium available.
+  /// set a specific size or wrap the component in a [SizedBox]
+  final double? width, height;
 
   /// border size, defaults to 2.
   final double borderSize;
 
   /// sliding factor. for value of 1 it doesn't slide in the x axis.
-  /// for a larger value means that it slides half widget width for each side, on a 1 increment.
-  /// from 0 to 1 slides less.
+  /// for a larger value means that it slides half widget width 
+  /// for each side, on a 1 increment. from 0 to 1 slides less.
   /// defaults to 1.4.
   final double slideFactor;
 
@@ -73,10 +70,55 @@ class CounterSlider extends StatefulWidget {
   final double gapSize;
 
   @override
-  State<CounterSlider> createState() => _CounterSliderState();
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) => _CounterSlider(
+        value: value,
+        onChanged: onChanged,
+        width: width ?? constraints.maxWidth,
+        height: height ?? constraints.maxHeight,
+        borderSize: borderSize,
+        gapSize: gapSize,
+        minValue: minValue,
+        maxValue: maxValue,
+        slideFactor: slideFactor,
+      ),
+    );
+  }
 }
 
-class _CounterSliderState extends State<CounterSlider> {
+class _CounterSlider extends StatefulWidget {
+  const _CounterSlider({
+    required this.value,
+    required this.onChanged,
+    required this.width,
+    required this.height,
+    required this.minValue,
+    required this.maxValue,
+    required this.gapSize,
+    required this.borderSize,
+    required this.slideFactor,
+  });
+
+  final int value;
+
+  final void Function(int) onChanged;
+
+  final double minValue, maxValue;
+
+  final double width, height;
+
+  final double borderSize;
+
+  final double slideFactor;
+
+  final double gapSize;
+
+  @override
+  State<_CounterSlider> createState() => _CounterSliderState();
+}
+
+class _CounterSliderState extends State<_CounterSlider> {
   Offset change = Offset.zero;
 
   _LockedOn lockedOn = _LockedOn.X;
@@ -103,7 +145,7 @@ class _CounterSliderState extends State<CounterSlider> {
   }
 
   @override
-  void didUpdateWidget(covariant CounterSlider oldWidget) {
+  void didUpdateWidget(covariant _CounterSlider oldWidget) {
     super.didUpdateWidget(oldWidget);
     calculateDimensions();
   }
@@ -146,11 +188,13 @@ class _CounterSliderState extends State<CounterSlider> {
             child: Container(
               decoration: widget.borderSize > 0
                   ? BoxDecoration(
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(widget.height)),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(widget.height),
+                      ),
                       border: Border.all(
-                          color: Theme.of(context).hintColor,
-                          width: widget.borderSize),
+                        color: Theme.of(context).hintColor,
+                        width: widget.borderSize,
+                      ),
                     )
                   : null,
               child: SizedBox(
@@ -220,32 +264,48 @@ class _CounterSliderState extends State<CounterSlider> {
                   change = Offset.zero;
                 });
               },
-              child: MouseRegion(
-                cursor: SystemMouseCursors.grab,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(_buttonRadius),
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  child: SizedBox(
-                    width: _buttonSize,
-                    height: _buttonSize,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        '${widget.value}',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSecondary,
-                          fontSize: widget.height / 2,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              child:
+                  _CentralButton(buttonSize: _buttonSize, value: widget.value),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _CentralButton extends StatelessWidget {
+  const _CentralButton({
+    required double buttonSize,
+    required this.value,
+  }) : _buttonSize = buttonSize;
+
+  final double _buttonSize;
+  final int value;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.grab,
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Theme.of(context).colorScheme.secondary,
+        ),
+        child: SizedBox(
+          width: _buttonSize,
+          height: _buttonSize,
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(
+              value.toString(),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSecondary,
+                fontSize: _buttonSize / 2,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
